@@ -41,15 +41,21 @@ const uploadPath = __dirname + "/public/uploads"; //define uploadpath
 var fileLife = {}; //stores the life of a file...assigned by the user...to be implemented
 
 function deleteFile(){ // function to delete files after its life 
+    // console.log(JSON.stringify(fileLife))
     fs.readdir(uploadPath, function (err, files) {
       files.forEach(function (file, index) {
-        fs.stat(path.join(uploadPath, file), function (err, stat) {
+        const filepath = path.join(uploadPath, file)
+        fs.stat(filepath, function (err, stat) {
+          const filename = filepath.split('/').pop()
           var endTime, now;
           if (err) {
             return console.error(err);
           }
           now = new Date().getTime();
-          endTime = new Date(stat.ctime).getTime() + (1000 * 60 * 60 * 24); // offset is in milliseconds
+          // console.log(filename)
+          // console.log(JSON.stringify(fileLife))
+          console.log(Number(fileLife[filename]))
+          endTime = new Date(stat.ctime).getTime() + (1000 * 60 * 60 * Number(fileLife[filename])); // offset is in milliseconds
           if (now > endTime) {
             return rimraf(path.join(uploadPath, file), function (err) {
               if (err) {
@@ -105,6 +111,7 @@ app.post('/uploadfile', (req, res) => {
             }
           });
         }
+        fileLife[req.file.filename] = req.body.time;
         res.json({
             path: req.file.filename
         })

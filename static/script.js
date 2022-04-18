@@ -23,6 +23,7 @@ function convertFile() {
         formData.append("file", file, file.name);
       }
       formData.append('email', $('#email-address').val());
+      formData.append('time',$('#time-select').val());
       console.log(formData);
       $.ajax({
         url: "/uploadfile",
