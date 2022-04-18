@@ -15,13 +15,25 @@
             <div class="mb-3 form-group">
                 <label for="formFile" class="form-label">Select a file to upload</label>
                 <input class="form-control" type="file" id="formFile" required>
-                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                <small id="emailHelp" class="form-text text-muted">File size limit is 4GB</small>
             </div>
         
             <button class="btn btn-primary" type="submit" id="submit-button">
                 Upload
             </button>
         </form>
+        <div id="download-link" class="mt-5" style="display: none;">
+            <div class="alert alert-success" role="alert">
+                <h4 class="alert-heading">Success!</h4>
+                <p>Your file has been uploaded successfully. You can share the link below with others.</p>
+                <hr>
+                <p class="mb-0">
+                    <a id="download-link-text" href="" target="_blank" class="alert-link">
+                        Download Link
+                    </a>
+                </p>
+            </div>
+        </div>
     </div>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>

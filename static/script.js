@@ -31,7 +31,7 @@ function convertFile() {
         contentType: false,
         success: function (data) {
           console.log(data.path);
-          $(".copy-input").val("http://localhost:3000/files/" + data.path);
+          $('#download-link-text').attr('href', 'http://localhost:3000/files/' + data.path);
         },
         xhr: function () {
           // create an XMLHttpRequest
@@ -44,13 +44,11 @@ function convertFile() {
                 // calculate the percentage of upload completed
                 var percentComplete = evt.loaded / evt.total;
                 percentComplete = parseInt(percentComplete * 100);
-                // update the Bootstrap progress bar with the new percentage
-                // $(".progress-bar").text(percentComplete + "%");
-                // $(".progress-bar").width(percentComplete + "%");
-                // once the upload reaches 100%, set the progress bar text to done
+                // once the upload reaches 100%, return original state of the button
                 if (percentComplete === 100) {
                   $("#submit-button").html("Upload");
                   $("#submit-button").prop("disabled", null);
+                  $('#download-link').show();
                 }
               }
             },
