@@ -22,6 +22,7 @@ function convertFile() {
         // add the files to formData object for the data payload
         formData.append("file", file, file.name);
       }
+      formData.append('email', $('#email-address').val());
       console.log(formData);
       $.ajax({
         url: "/uploadfile",
@@ -31,7 +32,7 @@ function convertFile() {
         contentType: false,
         success: function (data) {
           console.log(data.path);
-          $('#download-link-text').attr('href', 'http://localhost:3000/files/' + data.path);
+          $('#download-link-text').attr('href', window.location.origin+ '/files/' + data.path);
         },
         xhr: function () {
           // create an XMLHttpRequest

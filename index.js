@@ -5,6 +5,7 @@ const rimraf = require('rimraf')
 const multer = require("multer");
 const fs = require("fs");
 const generateID = require("./helpers/generateID");
+const nodemailer = require('nodemailer')
 
 const app = express();
 app.set('view engine', 'ejs')
@@ -66,6 +67,19 @@ function deleteFile(){ // function to delete files after its life
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json());
 
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'noreply.fileshare.openlake@gmail.com',
+    pass: 'TSwst6o9swP$SW'
+  }
+});
+const mailOptions = {
+  from: 'noreply.fileshare.openlake@gmail.com',
+  to: 'chaitanya.bisht10@gmail.com',
+  subject: 'fileShare: Download file',
+  text: 'adfdaf'
+};
 
 
 
@@ -76,6 +90,21 @@ app.get("/", (req, res) => {
 app.post('/uploadfile', (req, res) => {
     upload(req, res, err => {
         if (err) return res.end("Error uploading file." + err);
+        if (req.body.mail){
+          const mailOptions = {
+            from: 'noreply.fileshare.openlake@gmail.com',
+            to: req.body.email,
+            subject: 'fileShare: Download file',
+            text: req.get('origin') + '/files/' + req.file.filename
+          }; 
+          transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+              console.log(error);
+            } else {
+              console.log(`Email sent to ${req.body.email} ` + info.response);
+            }
+          });
+        }
         res.json({
             path: req.file.filename
         })
@@ -95,10 +124,6 @@ app.get('/download', (req, res) => {
     res.download(fullPath, pathOutput.split(randomSep)[1] , err => {
         if (err) res.send(err);
     })
-})
-
-app.get('/dwn',(req,res)=>{
-  res.render('displayfile')
 })
 
 app.listen(3000, () => {
