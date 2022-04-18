@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Download File</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.1/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="text-center">
+        Download the file
+      </h1>
+      <br><br>
+      <h2 class="text-center">File Info</h2>
+      <br>
+      <h3 class="text-center"><%=path.split(randomSep)[1]%></h3>
+      <br><br>
+      <input type="text" value="<%=path%>" id="path" hidden />
+      <div class="form-group container">
+        <button onclick="download()" class="btn btn-danger btn-block">
+          Download File
+        </button>
+      </div>
+    </div>
+  </body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script>
+    function download() {
+      window.open("/download?path=/public/uploads/" + $("#path").val());
+      location.reload();
+    }
+  </script>
+</html>
