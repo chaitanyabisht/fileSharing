@@ -8,8 +8,17 @@ const generateID = require("./helpers/generateID");
 const nodemailer = require('nodemailer')
 const Cryptr = require('cryptr');
 require('dotenv').config()
+const http = require('http')
+const https = require('https')
+var options = {
+	key: fs.readFileSync('/etc/letsencrypt/live/file.cse-iitbh.in/privkey.pem','utf-8'),
+	cert: fs.readFileSync('/etc/letsencrypt/live/file.cse-iitbh.in/fullchain.pem','utf-8')
+};
 
 const app = express();
+const httpServer = http.createServer(app)
+const httpsServer = https.createServer(options, app)
+
 app.set('view engine', 'ejs')
 
 const PORT = process.env.PORT || 3000;
@@ -153,6 +162,5 @@ app.get('*', (req, res) => {
 })
 
 
-app.listen(PORT, () => {
-    console.log("Server started on port 3000");
-})
+httpServer.listen(80);
+httpsServer.listen(443);
