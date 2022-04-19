@@ -6,6 +6,7 @@ const multer = require("multer");
 const fs = require("fs");
 const generateID = require("./helpers/generateID");
 const nodemailer = require('nodemailer')
+const Cryptr = require('cryptr');
 require('dotenv').config()
 
 const app = express();
@@ -20,6 +21,9 @@ app.use(express.static(path.resolve(__dirname + "/public/uploads"))); // Middlew
 app.use('/static', express.static(path.join(__dirname, 'static'))) //static files here
 
 const randomSep = generateID(7); // random string for used as a separator
+
+const cryptr = new Cryptr(process.env.AES_KEY);
+
 
 const storage = multer.diskStorage({
     destination: "./public/uploads/",
@@ -122,7 +126,7 @@ app.post('/uploadfile', (req, res) => {
         }
         fileLife[req.file.filename] = req.body.time;
         res.json({
-            path: req.file.filename
+            path: cryptr.encrypt(req.file.filename)
         })
     })
 })
@@ -130,11 +134,11 @@ app.post('/uploadfile', (req, res) => {
 
 app.get('/files/:id', (req, res) => {
     console.log(req.params.id)
-    res.render('displayfile', {path: req.params.id, randomSep: randomSep})
+    res.render('displayfile', {path: cryptr.decrypt(req.params.id), randomSep: randomSep})
 })
 
 app.get('/download', (req, res) => {
-    const pathOutput = req.query.path
+    const pathOutput = (req.query.path)
     console.log(pathOutput)
     const fullPath = path.join(__dirname, pathOutput);
     res.download(fullPath, pathOutput.split(randomSep)[1] , err => {
