@@ -123,7 +123,7 @@ app.post('/uploadfile', (req, res) => {
             from: process.env.GMAIL_ID,
             to: req.body.email,
             subject: 'fileShare: Download file',
-            text: "Download Link: "+req.get('origin') + '/files/' + req.file.filename
+            text: "Download Link: "+req.get('origin') + '/files/' + cryptr.encrypt(req.file.filename)
           }; 
           transporter.sendMail(mailOptions, function(error, info){
             if (error) {
