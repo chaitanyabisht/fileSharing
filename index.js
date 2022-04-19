@@ -6,7 +6,6 @@ const multer = require("multer");
 const fs = require("fs");
 const generateID = require("./helpers/generateID");
 const nodemailer = require('nodemailer')
-const axios = require('axios')
 require('dotenv').config()
 
 const app = express();
@@ -128,6 +127,13 @@ app.get('/download', (req, res) => {
         if (err) res.send(err);
     })
 })
+
+
+app.get('*', (req, res) => {
+    res.status = 404;
+    res.render('404')
+})
+
 
 app.listen(3000, () => {
     console.log("Server started on port 3000");
