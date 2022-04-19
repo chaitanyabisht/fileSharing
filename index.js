@@ -12,7 +12,7 @@ const app = express();
 app.set('view engine', 'ejs')
 
 const PORT = process.env.PORT || 3000;
-const maxSize = 10000 * 1024 * 1024;
+const maxSize = 4 * 1024 * 1024 * 1024;
 
 setInterval(deleteFile, 2000);
 
