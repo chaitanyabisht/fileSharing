@@ -2,7 +2,7 @@ var files;
 
 $("#file-upload").on("submit", function (e) {
     e.preventDefault();
-    $("#submit-button").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Uploading File');
+    $("#submit-button").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> <div style="display:inline" id="progress">Uploading</div>');
     $("#submit-button").prop("disabled", "true");
     convertFile();
 });
@@ -47,6 +47,7 @@ function convertFile() {
                 var percentComplete = evt.loaded / evt.total;
                 percentComplete = parseInt(percentComplete * 100);
                 // once the upload reaches 100%, return original state of the button
+                $('#progress').html("Uploading "+percentComplete + "%");
                 if (percentComplete === 100) {
                   $("#submit-button").html("Upload");
                   $("#submit-button").prop("disabled", null);

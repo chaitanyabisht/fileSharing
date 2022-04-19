@@ -6,6 +6,8 @@ const multer = require("multer");
 const fs = require("fs");
 const generateID = require("./helpers/generateID");
 const nodemailer = require('nodemailer')
+const axios = require('axios')
+
 
 const app = express();
 app.set('view engine', 'ejs')
@@ -54,7 +56,7 @@ function deleteFile(){ // function to delete files after its life
           now = new Date().getTime();
           // console.log(filename)
           // console.log(JSON.stringify(fileLife))
-          console.log(Number(fileLife[filename]))
+          console.log(`life: ${Number(fileLife[filename])}`)
           endTime = new Date(stat.ctime).getTime() + (1000 * 60 * 60 * Number(fileLife[filename])); // offset is in milliseconds
           if (now > endTime) {
             return rimraf(path.join(uploadPath, file), function (err) {
@@ -77,15 +79,9 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: 'noreply.fileshare.openlake@gmail.com',
-    pass: 'TSwst6o9swP$SW'
+    pass: process.env.GMAIL_PASSWORD
   }
 });
-const mailOptions = {
-  from: 'noreply.fileshare.openlake@gmail.com',
-  to: 'chaitanya.bisht10@gmail.com',
-  subject: 'fileShare: Download file',
-  text: 'adfdaf'
-};
 
 
 
@@ -96,7 +92,7 @@ app.get("/", (req, res) => {
 app.post('/uploadfile', (req, res) => {
     upload(req, res, err => {
         if (err) return res.end("Error uploading file." + err);
-        if (req.body.mail){
+        if (req.body.mail != "") {
           const mailOptions = {
             from: 'noreply.fileshare.openlake@gmail.com',
             to: req.body.email,
