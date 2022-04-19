@@ -41,6 +41,19 @@ const uploadPath = __dirname + "/public/uploads"; //define uploadpath
 
 var fileLife = {}; //stores the life of a file...assigned by the user...to be implemented
 
+function clearFiles(){
+  fs.readdir(uploadPath, (err, files) => {
+    files.forEach(file => {
+      const filepath = path.join(uploadPath, file)
+      return rimraf(filepath, e => {
+        if (e) throw e
+        console.log(`${file} was deleted as server restarts`)
+      })
+    })
+  })
+}
+clearFiles()
+
 function deleteFile(){ // function to delete files after its life 
     // console.log(JSON.stringify(fileLife))
     fs.readdir(uploadPath, function (err, files) {
@@ -58,11 +71,12 @@ function deleteFile(){ // function to delete files after its life
           console.log(`life: ${Number(fileLife[filename])}`)
           endTime = new Date(stat.ctime).getTime() + (1000 * 60 * 60 * Number(fileLife[filename])); // offset is in milliseconds
           if (now > endTime) {
-            return rimraf(path.join(uploadPath, file), function (err) {
+            return rimraf(filepath, function (err) {
               if (err) {
                 return console.error(err);
               }
               console.log(`${file.split(randomSep)[1]} was deleted`);
+              delete fileLife[filename]
             });
           }
         });
