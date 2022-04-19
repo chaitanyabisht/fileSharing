@@ -97,7 +97,7 @@ app.post('/uploadfile', (req, res) => {
             from: 'noreply.fileshare.openlake@gmail.com',
             to: req.body.email,
             subject: 'fileShare: Download file',
-            text: req.get('origin') + '/files/' + req.file.filename
+            text: "Download Link: "+req.get('origin') + '/files/' + req.file.filename
           }; 
           transporter.sendMail(mailOptions, function(error, info){
             if (error) {
