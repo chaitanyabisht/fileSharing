@@ -78,7 +78,7 @@ app.use(bodyparser.json());
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'noreply.fileshare.openlake@gmail.com',
+    user: process.env.GMAIL_ID,
     pass: process.env.GMAIL_PASSWORD
   }
 });
@@ -94,7 +94,7 @@ app.post('/uploadfile', (req, res) => {
         if (err) return res.end("Error uploading file." + err);
         if (req.body.mail != "") {
           const mailOptions = {
-            from: 'noreply.fileshare.openlake@gmail.com',
+            from: process.env.GMAIL_ID,
             to: req.body.email,
             subject: 'fileShare: Download file',
             text: "Download Link: "+req.get('origin') + '/files/' + req.file.filename
