@@ -7,32 +7,33 @@ const fs = require("fs");
 const generateID = require("./helpers/generateID");
 const nodemailer = require('nodemailer')
 const Cryptr = require('cryptr');
-require('dotenv').config()
 const http = require('http')
 const https = require('https')
-var options = {
+require('dotenv').config()
+
+var credentials = {
 	key: fs.readFileSync('/etc/letsencrypt/live/file.cse-iitbh.in/privkey.pem','utf-8'),
 	cert: fs.readFileSync('/etc/letsencrypt/live/file.cse-iitbh.in/fullchain.pem','utf-8')
 };
 
 const app = express();
 const httpServer = http.createServer(app)
-const httpsServer = https.createServer(options, app)
+const httpsServer = https.createServer(credentials, app)
 
 app.set('view engine', 'ejs')
 
-const PORT = process.env.PORT || 3000;
-const maxSize = 4 * 1024 * 1024 * 1024;
+const maxSize = 4 * 1024 * 1024 * 1024; // 4GB Upload Limit
 
 setInterval(deleteFile, 2000);
 
 app.use(express.static(path.resolve(__dirname + "/public/uploads"))); // Middleware for serving files
 app.use('/static', express.static(path.join(__dirname, 'static'))) //static files here
+app.use(bodyparser.urlencoded({ extended: false }));
+app.use(bodyparser.json());
 
 const randomSep = generateID(7); // random string for used as a separator
 
-const cryptr = new Cryptr(generateID(20));
-
+const cryptr = new Cryptr(generateID(20));  // function for encrypting filenames
 
 const storage = multer.diskStorage({
     destination: "./public/uploads/",
@@ -43,7 +44,6 @@ const storage = multer.diskStorage({
         )
     }
 });
-
 
 const upload = multer({   //define upload params
     storage: storage,
@@ -68,7 +68,6 @@ function clearFiles(){
 clearFiles()
 
 function deleteFile(){ // function to delete files after its life 
-    // console.log(JSON.stringify(fileLife))
     fs.readdir(uploadPath, function (err, files) {
       files.forEach(function (file, index) {
         const filepath = path.join(uploadPath, file)
@@ -79,8 +78,6 @@ function deleteFile(){ // function to delete files after its life
             return console.error(err);
           }
           now = new Date().getTime();
-          // console.log(filename)
-          // console.log(JSON.stringify(fileLife))
           console.log(`life: ${Number(fileLife[filename])}`)
           endTime = new Date(stat.ctime).getTime() + (1000 * 60 * 60 * Number(fileLife[filename])); // offset is in milliseconds
           if (now > endTime) {
@@ -97,10 +94,6 @@ function deleteFile(){ // function to delete files after its life
     });
 }
 
-
-app.use(bodyparser.urlencoded({ extended: false }));
-app.use(bodyparser.json());
-
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -110,6 +103,7 @@ const transporter = nodemailer.createTransport({
 });
 
 
+// Views
 
 app.get("/", (req, res) => {
     res.render('index')
@@ -119,13 +113,13 @@ app.post('/uploadfile', (req, res) => {
     upload(req, res, err => {
         if (err) return res.end("Error uploading file." + err);
         if (req.body.mail != "") {
-          const mailOptions = {
+          const mailcredentials = {
             from: process.env.GMAIL_ID,
             to: req.body.email,
             subject: 'fileShare: Download file',
             text: "Download Link: "+req.get('origin') + '/files/' + cryptr.encrypt(req.file.filename)
           }; 
-          transporter.sendMail(mailOptions, function(error, info){
+          transporter.sendMail(mailcredentials, function(error, info){
             if (error) {
               console.log(error);
             } else {
