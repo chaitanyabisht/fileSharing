@@ -7,7 +7,7 @@ const fs = require("fs");
 const generateID = require("./helpers/generateID");
 const nodemailer = require('nodemailer')
 const axios = require('axios')
-
+require('dotenv').config()
 
 const app = express();
 app.set('view engine', 'ejs')
