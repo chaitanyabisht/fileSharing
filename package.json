@@ -1,5 +1,5 @@
 {
-  "name": "fileSharing",
+  "name": "fileShare",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
@@ -12,5 +12,8 @@
     "multer": "^1.4.4",
     "nodemailer": "^6.7.3",
     "rimraf": "^3.0.2"
+  },
+  "scripts": {
+    "start": "node index.js"
   }
 }
