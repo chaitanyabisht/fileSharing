@@ -22,7 +22,7 @@ app.use('/static', express.static(path.join(__dirname, 'static'))) //static file
 
 const randomSep = generateID(7); // random string for used as a separator
 
-const cryptr = new Cryptr(process.env.AES_KEY);
+const cryptr = new Cryptr(generateID(20));
 
 
 const storage = multer.diskStorage({
