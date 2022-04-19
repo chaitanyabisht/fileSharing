@@ -33,7 +33,7 @@ function convertFile() {
         contentType: false,
         success: function (data) {
           console.log(data.path);
-          $('#download-link-text').attr('href', window.location.origin+ '/files/' + data.path);
+          $('#download-link-text').attr('value', window.location.origin+ '/files/' + data.path);
         },
         xhr: function () {
           // create an XMLHttpRequest
@@ -62,3 +62,10 @@ function convertFile() {
       });
     }
   }
+
+function copy() {
+    var copyText = document.getElementById("download-link-text");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(copyText.value);
+}
